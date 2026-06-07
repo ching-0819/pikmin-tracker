@@ -44,7 +44,8 @@ body {
 }
 
 .nav-logo {
-  font-family: 'Dela Gothic One', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+  font-weight: 600;
   font-size: 18px;
   color: var(--green);
   white-space: nowrap;
@@ -132,10 +133,11 @@ body {
 }
 
 .hero-title {
-  font-family: 'Dela Gothic One', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+  font-weight: 300;
   font-size: clamp(36px, 6vw, 64px);
-  line-height: 1.1;
-  letter-spacing: -1px;
+  line-height: 1.15;
+  letter-spacing: -2px;
 }
 
 .hero-sub {
@@ -178,7 +180,8 @@ body {
 }
 
 .section-title {
-  font-family: 'Dela Gothic One', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+  font-weight: 600;
   font-size: 22px;
   color: var(--text);
   margin-right: auto;
@@ -394,7 +397,8 @@ body {
 .modal-close:hover { background: #fee2e2; color: #dc2626; }
 
 .modal-title {
-  font-family: 'Dela Gothic One', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+  font-weight: 600;
   font-size: 20px;
   margin-bottom: 24px;
   color: var(--text);
