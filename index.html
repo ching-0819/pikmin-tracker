@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍄 皮克敏探索紀錄</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-logo">🌿 Pikmin Log</div>
+  <div class="nav-links">
+    <a href="#map-section" class="nav-btn active" data-tab="map">🗺️ 地圖總覽</a>
+    <a href="#mushroom-section" class="nav-btn" data-tab="mushroom">🍄 打菇紀錄</a>
+    <a href="#petal-section" class="nav-btn" data-tab="petal">💮 花點明信片</a>
+    <a href="#trade-section" class="nav-btn" data-tab="trade">📬 交換明信片</a>
+  </div>
+  <button class="hamburger" id="hamburger">☰</button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#map-section" class="mobile-link">🗺️ 地圖總覽</a>
+  <a href="#mushroom-section" class="mobile-link">🍄 打菇紀錄</a>
+  <a href="#petal-section" class="mobile-link">💮 花點明信片</a>
+  <a href="#trade-section" class="mobile-link">📬 交換明信片</a>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow">探索日誌</div>
+    <h1 class="hero-title">皮克敏<br>冒險紀錄</h1>
+    <p class="hero-sub">記錄每一次打菇座標、花點明信片蒐集與交換。</p>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-pill" id="stat-mushroom">🍄 <span id="count-mushroom">0</span> 筆打菇</div>
+    <div class="stat-pill" id="stat-petal">💮 <span id="count-petal">0</span> 張花點</div>
+    <div class="stat-pill" id="stat-trade">📬 <span id="count-trade">0</span> 張交換</div>
+  </div>
+</header>
+
+<!-- MAP SECTION -->
+<section id="map-section" class="section">
+  <div class="section-header">
+    <h2 class="section-title">🗺️ 地圖總覽</h2>
+    <div class="map-legend">
+      <span class="legend-item"><span class="dot dot-mushroom"></span>打菇</span>
+      <span class="legend-item"><span class="dot dot-petal"></span>花點明信片</span>
+    </div>
+    <div class="map-filter">
+      <button class="filter-btn active" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="mushroom">🍄 打菇</button>
+      <button class="filter-btn" data-filter="petal">💮 花點</button>
+    </div>
+  </div>
+  <div id="map"></div>
+</section>
+
+<!-- MUSHROOM SECTION -->
+<section id="mushroom-section" class="section">
+  <div class="section-header">
+    <h2 class="section-title">🍄 打菇紀錄</h2>
+    <button class="add-btn" onclick="openModal('mushroom')">＋ 新增紀錄</button>
+  </div>
+  <div class="cards-grid" id="mushroom-list"></div>
+  <div class="empty-state" id="mushroom-empty">
+    <div class="empty-icon">🍄</div>
+    <p>還沒有打菇紀錄，快去探索吧！</p>
+  </div>
+</section>
+
+<!-- PETAL SECTION -->
+<section id="petal-section" class="section">
+  <div class="section-header">
+    <h2 class="section-title">💮 花點明信片</h2>
+    <button class="add-btn" onclick="openModal('petal')">＋ 新增明信片</button>
+  </div>
+  <div class="cards-grid" id="petal-list"></div>
+  <div class="empty-state" id="petal-empty">
+    <div class="empty-icon">💮</div>
+    <p>還沒有花點明信片，快去兌換吧！</p>
+  </div>
+</section>
+
+<!-- TRADE SECTION -->
+<section id="trade-section" class="section">
+  <div class="section-header">
+    <h2 class="section-title">📬 交換明信片</h2>
+    <button class="add-btn" onclick="openModal('trade')">＋ 新增交換</button>
+  </div>
+  <div class="cards-grid" id="trade-list"></div>
+  <div class="empty-state" id="trade-empty">
+    <div class="empty-icon">📬</div>
+    <p>還沒有交換紀錄，快去找朋友交換吧！</p>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 class="modal-title" id="modalTitle">新增紀錄</h3>
+    <form id="entryForm" onsubmit="saveEntry(event)">
+      <input type="hidden" id="formType">
+      <input type="hidden" id="editId">
+
+      <div class="form-group" id="nameGroup">
+        <label>名稱 / 備註</label>
+        <input type="text" id="fieldName" placeholder="例：台北信義區的菇" required>
+      </div>
+
+      <div class="form-row" id="coordGroup">
+        <div class="form-group">
+          <label>緯度 (Lat)</label>
+          <input type="number" id="fieldLat" step="any" placeholder="25.0330">
+        </div>
+        <div class="form-group">
+          <label>經度 (Lng)</label>
+          <input type="number" id="fieldLng" step="any" placeholder="121.5654">
+        </div>
+      </div>
+
+      <div class="form-group coord-hint-box" id="coordHint">
+        <span>📍 如何取得座標？在 Google Maps 長按任一地點即可看到座標</span>
+      </div>
+
+      <div class="form-group" id="dateGroup">
+        <label>日期</label>
+        <input type="date" id="fieldDate">
+      </div>
+
+      <div class="form-group" id="petalCountGroup" style="display:none">
+        <label>花瓣數量</label>
+        <input type="number" id="fieldPetalCount" min="0" placeholder="例：50">
+      </div>
+
+      <div class="form-group" id="tradeFromGroup" style="display:none">
+        <label>交換來源 / 交換人</label>
+        <input type="text" id="fieldTradeFrom" placeholder="例：網路交換、朋友 小明">
+      </div>
+
+      <div class="form-group">
+        <label>上傳照片</label>
+        <div class="photo-upload-area" id="photoUploadArea" onclick="document.getElementById('fieldPhoto').click()">
+          <div class="upload-icon">📷</div>
+          <p>點擊上傳照片</p>
+          <p class="upload-hint">支援 JPG、PNG、WEBP</p>
+        </div>
+        <input type="file" id="fieldPhoto" accept="image/*" multiple style="display:none" onchange="previewPhotos(event)">
+        <div class="photo-preview-row" id="photoPreviewRow"></div>
+      </div>
+
+      <div class="form-group">
+        <label>標籤 (選填，逗號分隔)</label>
+        <input type="text" id="fieldTags" placeholder="例：罕見、週末、台北">
+      </div>
+
+      <button type="submit" class="submit-btn">💾 儲存</button>
+    </form>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" src="" alt="放大照片">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+</div>
+
+<footer class="footer">
+  <p>🌿 Pikmin 探索紀錄 · 資料儲存於本機瀏覽器</p>
+  <p style="margin-top:4px;font-size:12px;opacity:0.5">清除瀏覽器資料會刪除所有紀錄，建議定期匯出備份</p>
+  <button class="export-btn" onclick="exportData()">⬇️ 匯出備份 JSON</button>
+  <button class="export-btn" onclick="importData()">⬆️ 匯入備份</button>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
